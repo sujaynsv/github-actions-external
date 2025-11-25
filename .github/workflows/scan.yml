@@ -32,7 +32,8 @@ jobs:
 
       - name: Build image
         run: |
-          docker build -t ${{ vars.DOCKER_USERNAME }}/python-flask:${{ steps.meta.outputs.short_sha }} .
+          docker build -t sujaynsv/python-flask:${{ steps.meta.outputs.short_sha }} .
+
 
       - name: Push image (optional)
         if: github.ref == 'refs/heads/main'
