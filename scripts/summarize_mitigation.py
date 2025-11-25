@@ -6,6 +6,8 @@ def load_report(path: Path):
     with path.open("r", encoding="utf-8") as f:
         return json.load(f)
 
+
+
 def summarize(vulns):
     summary = defaultdict(list)
     for v in vulns:
