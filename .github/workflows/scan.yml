@@ -32,13 +32,12 @@ jobs:
 
       - name: Build image
         run: |
-          docker build -t sujaynsv/python-flask:${{ steps.meta.outputs.short_sha }} .
-
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/python-flask:${{ steps.meta.outputs.short_sha }} .
 
       - name: Push image (optional)
         if: github.ref == 'refs/heads/main'
         run: |
-          docker push ${{ vars.DOCKER_USERNAME }}/python-flask:${{ steps.meta.outputs.short_sha }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/python-flask:${{ steps.meta.outputs.short_sha }}
 
       - name: Install Trivy
         run: |
@@ -56,7 +55,7 @@ jobs:
             --scanners vuln \
             --format json \
             -o trivy-report.json \
-            ${{ vars.DOCKER_USERNAME }}/python-flask:${{ steps.meta.outputs.short_sha }}
+            ${{ secrets.DOCKER_USERNAME }}/python-flask:${{ steps.meta.outputs.short_sha }}
 
       - name: Scan image for vulnerabilities (SARIF)
         run: |
@@ -65,7 +64,7 @@ jobs:
             --scanners vuln \
             --format sarif \
             -o trivy-report.sarif \
-            ${{ vars.DOCKER_USERNAME }}/python-flask:${{ steps.meta.outputs.short_sha }}
+            ${{ secrets.DOCKER_USERNAME }}/python-flask:${{ steps.meta.outputs.short_sha }}
 
       - name: Upload scan artifacts
         uses: actions/upload-artifact@v4
@@ -74,8 +73,3 @@ jobs:
           path: |
             trivy-report.json
             trivy-report.sarif
-
-      - name: Upload SARIF to GitHub code scanning
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: trivy-report.sarif
